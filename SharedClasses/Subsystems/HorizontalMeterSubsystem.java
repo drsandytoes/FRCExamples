@@ -1,5 +1,7 @@
 package org.gerryrig.SharedClasses.Subsystems;
 
+import org.gerryrig.SharedClasses.Drawing.BitmapDrawingContext;
+
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -12,28 +14,34 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // each channel has the same height; this means some display may be unused.
 
 public class HorizontalMeterSubsystem extends SubsystemBase {
-    private static int m_startColumn;
-    private static LEDPanelSubsystem m_ledPanel;
+    private static int m_startColumn = 0;
+    private static BitmapDrawingContext m_ledPanel;
     private static int m_numChannels;
     private static int m_width = 0;
     private static int m_channelHeight = 1;
 
-    public HorizontalMeterSubsystem(LEDPanelSubsystem panel, int numChannels) {
+    // public HorizontalMeterSubsystem(LEDPanelSubsystem panel, int numChannels) {
+    //     m_ledPanel = panel;
+    //     m_numChannels = numChannels;
+    //     m_width = panel.width;
+    //     m_channelHeight = panel.height / m_numChannels; // Integer math will take the floor()
+    // }
+    public HorizontalMeterSubsystem(BitmapDrawingContext panel, int numChannels) {
         m_ledPanel = panel;
         m_numChannels = numChannels;
-        m_width = panel.width;
-        m_channelHeight = panel.height / m_numChannels; // Integer math will take the floor()
+        m_width = panel.width();
+        m_channelHeight = panel.height() / m_numChannels; // Integer math will take the floor()
     }
 
     // Sets ths starting column for the meter display. The area to the left can be used for 
     // something else.
     public void setStartColumn(int startColumn) {
         m_startColumn = startColumn;
-        m_width = m_ledPanel.width - startColumn;
+        m_width = m_ledPanel.width() - startColumn;
     }
 
     public void clearUnusedArea() {
-        for (int row = m_numChannels * m_channelHeight; row < m_ledPanel.height; row++) {
+        for (int row = m_numChannels * m_channelHeight; row < m_ledPanel.height(); row++) {
             for (int col = 0; col < m_width; col++) {
                 m_ledPanel.setPixelByXY(m_startColumn + col, row, Color.kBlack);
             }
@@ -63,7 +71,7 @@ public class HorizontalMeterSubsystem extends SubsystemBase {
     // Draws an output channel from the center with given negative and positive colors, a background color, and
     // a range of [-1.0, 1.0].
 
-    public void setCenterOutputChannel(int meterIndex, double fraction, Color posColor, Color negColor,
+    public void setCenterOutputChannel(int meterIndex, double fraction, Color negColor, Color posColor,
     Color bgColor, Color centerColor) {
         assert(meterIndex < m_numChannels);
         fraction = Math.min(1.0, Math.max(-1.0, fraction)); // Contrain to [-1.0, 1.0]
