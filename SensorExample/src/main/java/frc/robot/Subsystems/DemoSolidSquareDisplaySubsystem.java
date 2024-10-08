@@ -11,6 +11,7 @@ public class DemoSolidSquareDisplaySubsystem extends SubsystemBase {
 
     public DemoSolidSquareDisplaySubsystem(BitmapDrawingContext context) {
         panel = context;
+        context.setBrightnessOverride(1.0);
     }
 
     public void periodic() {
@@ -18,7 +19,7 @@ public class DemoSolidSquareDisplaySubsystem extends SubsystemBase {
     }
 
     public void set(boolean on) {
-        color = on ? Color.kRed : Color.kGreen;
+        color = on ? new Color(255, 0, 0) : new Color(0, 255, 0);
     }
 
     public void setOn() {

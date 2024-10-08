@@ -7,10 +7,32 @@ import edu.wpi.first.wpilibj.util.Color;
 // for subdividing a real LED panel into subregions. 
 
 public interface BitmapDrawingContext {
+    public void setBrightnessOverride(double brightness);
+
     public void setPixelByXY(int x, int y, Color color);
-    public void setPixelByXY(int x, int y, int red, int green, int blue);
-    public void clearScreen(Color color);
+
+    // Overrides brightness at the panel level
+    public void setPixelByXY(int x, int y, Color color, double brightness); 
 
     public int width();
     public int height();
+
+    default public void clearScreen(Color color) {
+        color = color != null ? color : Color.kBlack;
+        for (int x = 0; x < width(); x++) {
+            for (int y = 0; y < height(); y++) {
+                setPixelByXY(x, y, color);
+            }
+        }
+    }
+
+    default public void setPixelByXY(int x, int y, int red, int green, int blue) {
+        Color color = new Color(red, green, blue);
+        setPixelByXY(x, y, color);
+    }
+
+    default public void setPixelByXY(int x, int y, int red, int green, int blue, double brightness) {
+        Color color = new Color(red, green, blue);
+        setPixelByXY(x, y, color, brightness);
+    }
 }

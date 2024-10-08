@@ -18,10 +18,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDRegionSubsystem extends SubsystemBase implements BitmapDrawingContext {
     protected Rectangle m_region;
     protected BitmapDrawingContext m_underlyingContext;
+    protected boolean useBrightnessOverride = false;
+    protected double brightnessOverride = 1.0;
 
     public LEDRegionSubsystem(BitmapDrawingContext realContext, Rectangle region) {
         m_region = new Rectangle(region);
         m_underlyingContext = realContext;
+    }
+
+    public void setBrightnessOverride(double brightness) {
+        this.useBrightnessOverride = true;
+        this.brightnessOverride = brightness;
     }
 
     // Helper methods
@@ -52,21 +59,19 @@ public class LEDRegionSubsystem extends SubsystemBase implements BitmapDrawingCo
         Point regionRelativePoint = new Point(x, y);
         if (isValidPoint(regionRelativePoint)) {
             Point realPoint = realPointFromRegionRelativePoint(regionRelativePoint);
-            m_underlyingContext.setPixelByXY(realPoint.x, realPoint.y, color);
+            if (useBrightnessOverride) {
+                m_underlyingContext.setPixelByXY(realPoint.x, realPoint.y, color, brightnessOverride);
+            } else {
+                m_underlyingContext.setPixelByXY(realPoint.x, realPoint.y, color);
+            }
         }
     }
 
-    public void setPixelByXY(int x, int y, int red, int green, int blue) {
-        Color color = new Color(red, green, blue);
-        setPixelByXY(x, y, color);
-    }
-
-    public void clearScreen(Color color) {
-        color = color != null ? color : Color.kBlack;
-        for (int x = 0; x < width(); x++) {
-            for (int y = 0; y < height(); y++) {
-                setPixelByXY(x, y, color);
-            }
+    public void setPixelByXY(int x, int y, Color color, double brightness) {
+        Point regionRelativePoint = new Point(x, y);
+        if (isValidPoint(regionRelativePoint)) {
+            Point realPoint = realPointFromRegionRelativePoint(regionRelativePoint);
+            m_underlyingContext.setPixelByXY(realPoint.x, realPoint.y, color, brightness);
         }
     }
 

@@ -6,20 +6,24 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
 public final class Constants {
-    public final class ColorSensor {
+    public static final class RobotIdentities {
+        public static final String gerryRigSE = "032380CB";
+    }
+
+    public static final class ColorSensor {
         public static final I2C.Port port = I2C.Port.kOnboard;
     }
 
-    public final class Encoder {
+    public static final class Encoder {
         public static final int id = 22;
     }
 
-    public final class LimitSwitch {
+    public static final class LimitSwitch {
         public static final int gyroSwitch = 0;
         public static final int encoderSwitch = 1;
     }
 
-    public final class Motor {
+    public static final class Motor {
         public static final int gyroMotor = 30;
         public static final int encoderMotor = 31;
 
@@ -27,11 +31,22 @@ public final class Constants {
         public static final double maxMotorOutputFraction = 0.25;
     }
 
-    public final class Gyro {
-        public static final int id = 10;
+    public static final class GyroConfig {
+        public final int id;
+        public final String bus;
+
+        public GyroConfig(int id, String bus) {
+            this.id = id;
+            this.bus = bus;
+        }
     }
 
-    public final class LEDPanel {
+    public static final class Gyro {
+        public static final GyroConfig mike = new GyroConfig(1, "Canivore");
+        public static final GyroConfig other = new GyroConfig(10, "rio");
+    }
+
+    public static final class LEDPanel {
         public static final int kLEDPWMPin = 0;
         public static final int kMatrixHeight = 16;
         public static final int kMatrixWidth = 16 * 3 + 1;
@@ -53,7 +68,7 @@ public final class Constants {
         }
     }
 
-    public final class MeterConfig {
+    public static final class MeterConfig {
         public static final int kPositionIndex = 0;
         public static final Color kPositivePositionColor = Color.kWhite;
         public static final Color kNegativePositionColor = Color.kGray;

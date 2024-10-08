@@ -22,7 +22,7 @@ public class LEDPanelSubsystem extends SubsystemBase implements BitmapDrawingCon
 
     protected int width = 1;
     protected int height = 1;
-    public double brightness = 0.25;
+    protected double defaultBrightness = 0.25;
     
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
@@ -42,7 +42,18 @@ public class LEDPanelSubsystem extends SubsystemBase implements BitmapDrawingCon
         m_led.start();
     }
 
-    public void setPixelByID(int pixelID, int red, int green, int blue) {
+    public void setBrightnessOverride(double brightness) {
+        defaultBrightness = brightness;
+    }
+        
+    // public void setPixelByID(int pixelID, int red, int green, int blue, double brightness) {
+    //     if (pixelID >= 0 && pixelID < m_ledBuffer.getLength()) {
+    //         float hsbValues[] = java.awt.Color.RGBtoHSB(red, green, blue, null);
+    //         m_ledBuffer.setHSV(pixelID, (int)hsbValues[0], (int)hsbValues[1], (int)(hsbValues[2] * brightness));
+    //     }
+    // }
+
+    public void setPixelByID(int pixelID, int red, int green, int blue, double brightness) {
         if (pixelID >= 0 && pixelID < m_ledBuffer.getLength()) {
             int scaledRed = (int)((double)red * brightness);
             int scaledGreen = (int)((double)green * brightness);
@@ -53,30 +64,41 @@ public class LEDPanelSubsystem extends SubsystemBase implements BitmapDrawingCon
     }
 
     public void setPixelHSVByID(int pixelID, int hue, int saturation, int value) {
-        m_ledBuffer.setHSV(pixelID, hue, saturation, (int)((double)value * brightness));
+        m_ledBuffer.setHSV(pixelID, hue, saturation, (int)((double)value * defaultBrightness));
     }
 
     public void setPixelByXY(int x, int y, Color color) {
         setPixelByXY(x, y, (int)(color.red * 255), (int)(color.green * 255), (int)(color.blue * 255));
     }
 
+    public void setPixelByXY(int x, int y, Color color, double brightness) {
+        setPixelByXY(x, y, (int)(color.red * 255), (int)(color.green * 255), (int)(color.blue * 255), brightness);
+    }
+
     public void setPixelByXY(int x, int y, int red, int green, int blue) {
         int pixelID = getPixelIDForXY(x, y);
         if (pixelID >= 0) {
-            setPixelByID(pixelID, red, green, blue);
+            setPixelByID(pixelID, red, green, blue, defaultBrightness);
+        }
+    }
+
+    public void setPixelByXY(int x, int y, int red, int green, int blue, double brightness) {
+        int pixelID = getPixelIDForXY(x, y);
+        if (pixelID >= 0) {
+            setPixelByID(pixelID, red, green, blue, brightness);
         }
     }
 
     // Set all pixels to the same color
     public void setColor(int red, int green, int blue) {
         for (int i = 0; i < width * height; i++) {
-            setPixelByID(i, red, green, blue);
+            setPixelByID(i, red, green, blue, defaultBrightness);
         }
     }
 
     public void setColor(Color color) {
         for (int i = 0; i < width * height; i++) {
-            setPixelByID(i, (int)(color.red * 255), (int)(color.green * 255), (int)(color.blue * 255));
+            setPixelByID(i, (int)(color.red * 255), (int)(color.green * 255), (int)(color.blue * 255), defaultBrightness);
         }
     }
 
@@ -96,7 +118,7 @@ public class LEDPanelSubsystem extends SubsystemBase implements BitmapDrawingCon
             // shape is a circle so only one value needs to precess
             final var hue = (startingHue + (int)(i * 180.0 / m_ledBuffer.getLength())) % 180;
             // Set the value
-            m_ledBuffer.setHSV(i, hue, 255, (int)(255 * brightness));
+            m_ledBuffer.setHSV(i, hue, 255, (int)(255 * defaultBrightness));
         }
         // Increase by to make the rainbow "move"
         startingHue += 3;

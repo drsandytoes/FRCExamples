@@ -18,6 +18,7 @@ import com.revrobotics.ColorMatch;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -45,7 +46,20 @@ public class RobotContainer {
     private final DigitalInput gyroLimitSwitch = new DigitalInput(Constants.LimitSwitch.gyroSwitch);
     private final DigitalInput encoderLimitSwitch = new DigitalInput(Constants.LimitSwitch.encoderSwitch);
 
-    private final Pigeon2 pigeon = new Pigeon2(Constants.Gyro.id);
+    private final Pigeon2 pigeon;
+
+    // This block runes each time this class is instantiated (though we should only be doing that once). This allows us
+    // to use conditional logic to setup the final instance variable without having to resort to moving this code
+    // into the constructor (not that that's necessarily bad).
+    {
+        Constants.GyroConfig gyroConfig;
+        if (RobotController.getSerialNumber().equals(Constants.RobotIdentities.gerryRigSE)) {
+            gyroConfig = Constants.Gyro.mike;
+        } else {
+            gyroConfig = Constants.Gyro.other;
+        }
+        pigeon = new Pigeon2(gyroConfig.id, gyroConfig.bus);
+    }
 
     private final ColorSensorV3 colorSensor = new ColorSensorV3(Constants.ColorSensor.port);
     private final ColorMatch colorMatcher = new ColorMatch();
@@ -92,6 +106,7 @@ public class RobotContainer {
      */
 
     public RobotContainer() {
+        System.out.println("Robot SN: " + RobotController.getSerialNumber());
         configurePigeon();
         configureColorSensor();
 
