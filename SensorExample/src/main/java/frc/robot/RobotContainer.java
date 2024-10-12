@@ -48,8 +48,10 @@ public class RobotContainer {
 
     private final Pigeon2 pigeon;
 
-    // This block runes each time this class is instantiated (though we should only be doing that once). This allows us
-    // to use conditional logic to setup the final instance variable without having to resort to moving this code
+    // This block runs each time this class is instantiated (though we should only
+    // be doing that once). This allows us
+    // to use conditional logic to setup the final instance variable without having
+    // to resort to moving this code
     // into the constructor (not that that's necessarily bad).
     {
         Constants.GyroConfig gyroConfig;
@@ -78,9 +80,12 @@ public class RobotContainer {
 
     // Demo subsystems
     private final DemoDisplaySubsystem displaySubsystem = new DemoDisplaySubsystem(mainDisplay);
-    private final DemoSolidSquareDisplaySubsystem encoderSwitchDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(encoderSwitchDisplay);
-    private final DemoSolidSquareDisplaySubsystem gyroDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(gyroSwitchDisplay);
-    private final DemoSolidSquareDisplaySubsystem colorSensorSwitchDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(colorSensorDisplay);
+    private final DemoSolidSquareDisplaySubsystem encoderSwitchDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(
+            encoderSwitchDisplay);
+    private final DemoSolidSquareDisplaySubsystem gyroDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(
+            gyroSwitchDisplay);
+    private final DemoSolidSquareDisplaySubsystem colorSensorSwitchDisplaySubsystem = new DemoSolidSquareDisplaySubsystem(
+            colorSensorDisplay);
 
     private final MotorSubsystem gyroMotorSubsystem = new MotorSubsystem(gyroMotor);
     private final MotorSubsystem encoderMotorSubsystem = new MotorSubsystem(encoderMotor);
@@ -91,14 +96,15 @@ public class RobotContainer {
 
     /*
      * Main display (45 x 16) -- all bidirectional graphs
-     *   Absolute position
-     *   Relative position
-     *   Yaw
-     *   X acceleration
-     *   Y acceleration
-     *   Z acceleration
+     * Absolute position
+     * Relative position
+     * Yaw
+     * X acceleration
+     * Y acceleration
+     * Z acceleration
      * 
-     * Right display (4 x 16) (which includes one column off the end) -- solid colors
+     * Right display (4 x 16) (which includes one column off the end) -- solid
+     * colors
      * Limit switch 1 (4 x 4)
      * Limit switch 2 (4 x 4)
      * Detected color (4 x 4)
@@ -119,10 +125,10 @@ public class RobotContainer {
         colorMatcher.addColorMatch(kBlueTarget);
         colorMatcher.addColorMatch(kGreenTarget);
         colorMatcher.addColorMatch(kRedTarget);
-        colorMatcher.addColorMatch(kYellowTarget); 
-        colorMatcher.addColorMatch(kBlackTarget);  
-        colorMatcher.addColorMatch(kBlack1Target); 
-        colorMatcher.addColorMatch(kGrayTarget);   
+        colorMatcher.addColorMatch(kYellowTarget);
+        colorMatcher.addColorMatch(kBlackTarget);
+        colorMatcher.addColorMatch(kBlack1Target);
+        colorMatcher.addColorMatch(kGrayTarget);
     }
 
     private void configurePigeon() {
@@ -138,14 +144,15 @@ public class RobotContainer {
         configs.GyroTrim.GyroScalarY = 0;
         configs.GyroTrim.GyroScalarZ = 0;
 
-        // We want the thermal comp and no-motion cal enabled, with the compass disabled for best behavior
+        // We want the thermal comp and no-motion cal enabled, with the compass disabled
+        // for best behavior
         configs.Pigeon2Features.DisableNoMotionCalibration = false;
         configs.Pigeon2Features.DisableTemperatureCompensation = false;
         configs.Pigeon2Features.EnableCompass = false;
 
         // Write these configs to the Pigeon2
         pigeon.getConfigurator().apply(configs);
-        
+
         // Set the yaw to 0 degrees for initial use
         pigeon.setYaw(0);
     }
@@ -158,7 +165,8 @@ public class RobotContainer {
             // Force the rotation to normalize
             Rotation2d normalizedRotation = pigeon.getRotation2d().plus(new Rotation2d());
 
-            displaySubsystem.setEncoderState(encoder.getPosition().getValueAsDouble(), encoder.getAbsolutePosition().getValueAsDouble());
+            displaySubsystem.setEncoderState(encoder.getPosition().getValueAsDouble(),
+                    encoder.getAbsolutePosition().getValueAsDouble());
             displaySubsystem.setRotation(normalizedRotation);
             displaySubsystem.setAccelerationX(pigeon.getAccelerationX().getValueAsDouble());
             displaySubsystem.setAccelerationY(pigeon.getAccelerationY().getValueAsDouble());
@@ -173,12 +181,10 @@ public class RobotContainer {
             encoderSwitchDisplaySubsystem.set(encoderLimitSwitch.get());
         }, encoderSwitchDisplaySubsystem).ignoringDisable(true));
 
-        /*
         colorSensorSwitchDisplaySubsystem.setDefaultCommand(new RunCommand(() -> {
             updateMatchedColor();
             colorSensorSwitchDisplaySubsystem.setColor(lastColorMatch);
         }, colorSensorSwitchDisplaySubsystem).ignoringDisable(true));
-        */
 
         // Notor ones won't run while disabled
         encoderMotorSubsystem.setDefaultCommand(new RunCommand(() -> {
@@ -219,23 +225,23 @@ public class RobotContainer {
              */
             Color matchedColor = Color.kWhite;
             ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
-        
+
             if (match.color == kBlueTarget) {
-            matchedColor = Color.kBlue;
+                matchedColor = Color.kBlue;
             } else if (match.color == kRedTarget) {
-            matchedColor = Color.kRed;
+                matchedColor = Color.kRed;
             } else if (match.color == kGreenTarget) {
-            matchedColor = Color.kGreen;
+                matchedColor = Color.kGreen;
             } else if (match.color == kYellowTarget) {
-            matchedColor = Color.kYellow;
+                matchedColor = Color.kYellow;
             } else if (match.color == kBlackTarget) {
-            matchedColor = Color.kBlack;
+                matchedColor = Color.kBlack;
             } else if (match.color == kBlack1Target) {
-            matchedColor = Color.kBlack;
+                matchedColor = Color.kBlack;
             } else if (match.color == kGrayTarget) {
-            matchedColor = Color.kGray;
+                matchedColor = Color.kGray;
             }
-    
+
             lastColorMatch = matchedColor;
         }
     }
